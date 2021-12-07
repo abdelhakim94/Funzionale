@@ -3,6 +3,7 @@
     public static class FuncExtensions
     {
         // Curry
+
         public static Func<T1, Func<T2, R>> Curry<T1, T2, R>(this Func<T1, T2, R> @this) =>
             t1 => t2 => @this(t1, t2);
 

@@ -13,16 +13,16 @@
                 Some: v => some(map(v)));
 
         public static Option<Func<T2, R>> Map<T1, T2, R>(this Option<T1> @this, Func<T1, T2, R> f) =>
-            Map(@this, f.CurryFirst());
+            @this.Map(f.CurryFirst());
 
         public static Option<Func<T2, T3, R>> Map<T1, T2, T3, R>(this Option<T1> @this, Func<T1, T2, T3, R> f) =>
-            Map(@this, f.CurryFirst());
+            @this.Map(f.CurryFirst());
 
         public static Option<Func<T2, T3, T4, R>> Map<T1, T2, T3, T4, R>(this Option<T1> @this, Func<T1, T2, T3, T4, R> f) =>
-            Map(@this, f.CurryFirst());
+            @this.Map(f.CurryFirst());
 
         public static Option<Func<T2, T3, T4, T5, R>> Map<T1, T2, T3, T4, T5, R>(this Option<T1> @this, Func<T1, T2, T3, T4, T5, R> f) =>
-            Map(@this, f.CurryFirst());
+            @this.Map(f.CurryFirst());
 
         // Monad
 
@@ -54,20 +54,20 @@
 
         // Utilities
 
-        public static Option<Unit> ForEach<T>(this Option<T> @this, Func<T, Unit> f) => Map(@this, f);
-        public static Option<Unit> ForEach<T>(this Option<T> @this, Action<T> action) => ForEach(@this, action.ToFunc());
+        public static Option<Unit> ForEach<T>(this Option<T> @this, Func<T, Unit> f) => @this.Map(f);
+        public static Option<Unit> ForEach<T>(this Option<T> @this, Action<T> action) => @this.ForEach(action.ToFunc());
 
         public static Unit Match<T>(this Option<T> @this, Action None, Action<T> Some) =>
             @this.Match(None.ToFunc(), Some.ToFunc());
 
         // LINQ
 
-        public static Option<R> Select<T, R>(this Option<T> @this, Func<T, R> map) => Map(@this, map);
+        public static Option<R> Select<T, R>(this Option<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static Option<R> SelectMany<T, R>(this Option<T> @this, Func<T, Option<R>> bind) => Bind(@this, bind);
+        public static Option<R> SelectMany<T, R>(this Option<T> @this, Func<T, Option<R>> bind) => @this.Bind(bind);
 
         public static Option<S> SelectMany<T, R, S>(this Option<T> @this, Func<T, Option<R>> bind, Func<T, R, S> project) =>
-            Bind(@this, x => Map(bind(x), y => project(x, y)));
+            @this.Bind(x => bind(x).Map(y => project(x, y)));
 
         public static Option<T> Where<T>(this Option<T> @this, Func<T, bool> predicate) =>
             @this.Match(
