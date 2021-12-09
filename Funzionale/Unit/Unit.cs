@@ -10,5 +10,6 @@ namespace Funzionale
     {
         public static Unit unit => default;
     }
+
     public struct Unit {}
 }

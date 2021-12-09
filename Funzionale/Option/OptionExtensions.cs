@@ -1,6 +1,7 @@
 ﻿namespace Funzionale
 {
     using static Prelude;
+
     public static class OptionExtensions
     {
         // Functor
@@ -8,9 +9,9 @@
         public static Option<R> Map<T, R>(this Option.None _, Func<T, R> map) => none;
         public static Option<R> Map<T, R>(this Option.Some<T> s, Func<T, R> map) => map(s.value);
         public static Option<R> Map<T, R>(this Option<T> @this, Func<T, R> map) =>
-            @this.Match(
+            @this.Match<Option<R>>(
                 None: () => none,
-                Some: v => some(map(v)));
+                Some: v => map(v));
 
         public static Option<Func<T2, R>> Map<T1, T2, R>(this Option<T1> @this, Func<T1, T2, R> f) =>
             @this.Map(f.CurryFirst());
@@ -36,9 +37,9 @@
         public static Option<R> Apply<T, R>(this Option<Func<T, R>> @this, Option<T> arg) =>
             @this.Match(
                 None: () => none,
-                Some: f => arg.Match(
+                Some: f => arg.Match<Option<R>>(
                     None: () => none,
-                    Some: a => some(f(a))));
+                    Some: a => f(a)));
 
         public static Option<Func<T2, R>> Apply<T1, T2, R>(this Option<Func<T1, T2, R>> @this, Option<T1> arg) =>
             @this.Map(FuncExtensions.Curry).Apply(arg);
@@ -60,6 +61,10 @@
         public static Unit Match<T>(this Option<T> @this, Action None, Action<T> Some) =>
             @this.Match(None.ToFunc(), Some.ToFunc());
 
+        // TODO: Transormations of option to validation
+
+        // TODO: Make option traversable with other common monads like Task, IEnumerable...etc.
+
         // LINQ
 
         public static Option<R> Select<T, R>(this Option<T> @this, Func<T, R> map) => @this.Map(map);
@@ -70,8 +75,8 @@
             @this.Bind(x => bind(x).Map(y => project(x, y)));
 
         public static Option<T> Where<T>(this Option<T> @this, Func<T, bool> predicate) =>
-            @this.Match(
+            @this.Match<Option<T>>(
                 None: () => none,
-                Some: v => predicate(v) ? some(v) : none);
+                Some: v => predicate(v) ? v : none);
     }
 }
