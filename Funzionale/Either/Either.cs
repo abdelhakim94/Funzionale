@@ -56,7 +56,7 @@ namespace Funzionale
         [MemberNotNullWhen(false, nameof(left))]
         readonly bool isRight => !isLeft;
 
-        internal Either([DisallowNull] L l)
+        private Either([DisallowNull] L l)
         {
             if (l is null)
                 throw new ArgumentNullException(nameof(l), "Cannot initialize Either in the Left state with a null left value. Use Option instead.");
@@ -65,7 +65,7 @@ namespace Funzionale
             isLeft = true;
         }
 
-        internal Either([DisallowNull] R r)
+        private Either([DisallowNull] R r)
         {
             if (r is null)
                 throw new ArgumentNullException(nameof(r), "Cannot initialize Either in the Right state with a null right value. Use Option instead.");

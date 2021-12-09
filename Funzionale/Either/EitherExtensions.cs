@@ -54,6 +54,9 @@
         public static Either<L, Unit> ForEach<L, R>(this Either<L, R> @this, Func<R, Unit> func) =>
             @this.Map(func);
 
+        public static Unit Match<L, R>(this Either<L, R> @this, Action<L> Left, Action<R> Right) =>
+            @this.Match(Left.ToFunc(), Right.ToFunc());
+
         // LINQ
 
         public static Either<L, RR> Select<L, R, RR>(this Either<L, R> @this, Func<R, RR> map) => @this.Map(map);
