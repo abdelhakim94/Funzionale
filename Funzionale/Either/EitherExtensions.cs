@@ -6,6 +6,12 @@ namespace Funzionale
 
     public static class EitherExtensions
     {
+        /// <summary>
+        /// We could have let the null value returned by a function be lifted with the left/right
+        /// functions, and that would have thrown an exception anyway. But we want to give
+        /// the caller a clear indication that the problem comes from the fact that the function
+        /// he provided returns null and that he should use Option instead.
+        /// </summary>
         [DoesNotReturn]
         private static T Guard<T>(string fName) => Either.NullGuard<T>.nullReturnGuard(fName);
 

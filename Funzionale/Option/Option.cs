@@ -4,6 +4,15 @@
     using static Prelude;
     public static partial class Prelude
     {
+        /// <summary>
+        /// If you explicitely use 'some' to lift a value to an 'Option', then you are 
+        /// supposed to be sure that the value is not null. If you are not sure, consider
+        /// either checking for null-state or assigning the value directly to an 'Option'
+        /// variable. The implicit conversion between your value and the 'Option' takes
+        /// care of checking the null-state
+        /// </summary>
+        /// <returns>An 'Option' in the 'Some' state wrapping your value</returns>
+        /// <exception cref="ArgumentNullException">The provided value was null</exception>
         public static Option<T> some<T>([DisallowNull][NotNull] T value) =>
             value ?? throw new ArgumentNullException(nameof(value), "'Some' cannot wrap a null value. Use None instead.");
 

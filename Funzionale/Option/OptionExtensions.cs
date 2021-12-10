@@ -6,8 +6,15 @@ namespace Funzionale
 
     public static class OptionExtensions
     {
+        /// <summary>
+        /// We could have let the null value returned by a function be lifted with some,
+        /// and that would have thrown an exception anyway. But we want to give
+        /// the caller a clear indication that the problem comes from the fact that the function
+        /// he provided returns null and that he should use Option instead.
+        /// </summary>
         [DoesNotReturn]
         private static T Guard<T>(string fName) => throw new ArgumentNullException($"'{fName}' returned null. Consider returning an Option instead.");
+
         // Functor
 
         public static Option<R> Map<T, R>(this Option.None _, Func<T, R> map) => none;

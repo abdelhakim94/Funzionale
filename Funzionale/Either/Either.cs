@@ -6,11 +6,9 @@ namespace Funzionale
 
     public partial class Prelude
     {
-        public static Either.Left<L> left<L>([DisallowNull][NotNull] L l) =>
-            new(l ?? Either.NullGuard<L>.NullStateGuard("Left"));
+        public static Either.Left<L> left<L>([DisallowNull][NotNull] L l) => new(l);
 
-        public static Either.Right<R> right<R>([DisallowNull][NotNull] R r) =>
-            new(r ?? Either.NullGuard<R>.NullStateGuard("Right"));
+        public static Either.Right<R> right<R>([DisallowNull][NotNull] R r) => new(r);
     }
 
     namespace Either
@@ -64,10 +62,10 @@ namespace Funzionale
             isLeft = false;
         }
 
-        public static implicit operator Either<L, R>([DisallowNull][NotNull] L l) => new(l ?? Guard<L>("Left"));
-        public static implicit operator Either<L, R>([DisallowNull][NotNull] R r) => new(r ?? Guard<R>("Right"));
-        public static implicit operator Either<L, R>(Either.Left<L> l) => new(l.Value ?? Guard<L>("Left"));
-        public static implicit operator Either<L, R>(Either.Right<R> r) => new(r.Value ?? Guard<R>("Right"));
+        public static implicit operator Either<L, R>([DisallowNull][NotNull] L l) => new(l);
+        public static implicit operator Either<L, R>([DisallowNull][NotNull] R r) => new(r);
+        public static implicit operator Either<L, R>(Either.Left<L> l) => new(l.Value!);
+        public static implicit operator Either<L, R>(Either.Right<R> r) => new(r.Value!);
         public TR Match<TR>(Func<L, TR> Left, Func<R, TR> Right) => isLeft ? Left(left) : Right(right);
     }
 }
