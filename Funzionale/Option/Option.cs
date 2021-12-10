@@ -21,10 +21,10 @@
 
     namespace Option
     {
-        public struct None { }
+        public readonly struct None { }
     }
 
-    public struct Option<T> : IEquatable<Option<T>>, IEquatable<Option.None>
+    public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<Option.None>
     {
         readonly T value;
 

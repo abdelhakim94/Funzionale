@@ -15,9 +15,9 @@ namespace Funzionale
 
     namespace Either
     {
-        public struct Left<L>
+        public readonly struct Left<L>
         {
-            internal L Value;
+            internal readonly L Value;
             internal Left([DisallowNull] L value)
             {
                 if (value is null)
@@ -26,35 +26,26 @@ namespace Funzionale
             }
         }
 
-        public struct Right<R>
+        public readonly struct Right<R>
         {
-            internal R Value;
+            internal readonly R Value;
             internal Right([DisallowNull] R value)
             {
                 if (value is null)
                     throw new ArgumentNullException(nameof(value), "'Right' cannot wrap null. Use Option instead");
                 Value = value;
             }
-
-            //public Right<RR> Map<RR>(Func<R, RR> map) =>
-            //    right(map(Value) ?? throw new ArgumentNullException(nameof(RR), "'Right' cannot wrap null. Use Option instead"));
-
-            //public Either<L, RR> Bind<L, RR>(Func<R, Either<L, RR>> bind) => bind(Value);
         }
     }
 
-    public struct Either<L, R>
+    public readonly struct Either<L, R>
     {
         readonly L? left;
         readonly R? right;
 
         [MemberNotNullWhen(true, nameof(left))]
         [MemberNotNullWhen(false, nameof(right))]
-        readonly bool isLeft { get; }
-
-        [MemberNotNullWhen(true, nameof(right))]
-        [MemberNotNullWhen(false, nameof(left))]
-        readonly bool isRight => !isLeft;
+        readonly bool isLeft{ get; }
 
         private Either([DisallowNull] L l)
         {

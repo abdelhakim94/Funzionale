@@ -11,5 +11,5 @@ namespace Funzionale
         public static Unit unit => default;
     }
 
-    public struct Unit {}
+    public readonly struct Unit {}
 }
