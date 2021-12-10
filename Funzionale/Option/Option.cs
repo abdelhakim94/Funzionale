@@ -4,16 +4,7 @@
     using static Prelude;
     public static partial class Prelude
     {
-        /// <summary>
-        /// If you explicitely use 'some' to lift a value in an 'Option', then you are 
-        /// supposed to be sure that the value is not null. If you are not sure, consider
-        /// either checking for null-state or assigning the value directly to an 'Option'
-        /// variable. The implicit conversion between your value and the 'Option' takes
-        /// care of checking the null-state
-        /// </summary>
-        /// <returns>An 'Option' in the 'Some' state wrapping your value</returns>
-        /// <exception cref="ArgumentNullException">The provided value was null</exception>
-        public static Option<T> some<T>([DisallowNull] T value) =>
+        public static Option<T> some<T>([DisallowNull][NotNull] T value) =>
             value ?? throw new ArgumentNullException(nameof(value), "'Some' cannot wrap a null value. Use None instead.");
 
         public static Option.None none => default;
@@ -35,7 +26,7 @@
         readonly bool IsNone => !IsSome;
 
         public static implicit operator Option<T>(Option.None _) => default;
-        public static implicit operator Option<T>(T value) => value is null ? none : value;
+        public static implicit operator Option<T>(T value) => value is null ? none : some(value);
 
         public R Match<R>(Func<R> None, Func<T, R> Some) => IsSome ? Some(value) : None();
 

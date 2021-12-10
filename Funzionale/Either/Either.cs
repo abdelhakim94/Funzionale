@@ -6,11 +6,11 @@ namespace Funzionale
 
     public partial class Prelude
     {
-        public static Either.Left<L> left<L>([DisallowNull] L l) =>
-            new(l ?? throw new ArgumentNullException(nameof(l), "'Left' cannot wrap null. Use Option instead"));
+        public static Either.Left<L> left<L>([DisallowNull][NotNull] L l) =>
+            new(l ?? Either.NullGuard<L>.NullStateGuard("Left"));
 
-        public static Either.Right<R> right<R>([DisallowNull] R r) =>
-            new(r ?? throw new ArgumentNullException(nameof(r), "'Right' cannot wrap null. Use Option instead"));
+        public static Either.Right<R> right<R>([DisallowNull][NotNull] R r) =>
+            new(r ?? Either.NullGuard<R>.NullStateGuard("Right"));
     }
 
     namespace Either
@@ -18,10 +18,9 @@ namespace Funzionale
         public readonly struct Left<L>
         {
             internal readonly L Value;
-            internal Left([DisallowNull] L value)
+            internal Left([DisallowNull][NotNull] L value)
             {
-                if (value is null)
-                    throw new ArgumentNullException(nameof(value), "'Left' cannot wrap null. Use Option instead.");
+                if (value is null) NullGuard<L>.NullStateGuard("Left");
                 Value = value;
             }
         }
@@ -29,10 +28,9 @@ namespace Funzionale
         public readonly struct Right<R>
         {
             internal readonly R Value;
-            internal Right([DisallowNull] R value)
+            internal Right([DisallowNull][NotNull] R value)
             {
-                if (value is null)
-                    throw new ArgumentNullException(nameof(value), "'Right' cannot wrap null. Use Option instead");
+                if (value is null) NullGuard<R>.NullStateGuard("Right");
                 Value = value;
             }
         }
@@ -45,37 +43,31 @@ namespace Funzionale
 
         [MemberNotNullWhen(true, nameof(left))]
         [MemberNotNullWhen(false, nameof(right))]
-        readonly bool isLeft{ get; }
+        readonly bool isLeft { get; }
 
-        private Either([DisallowNull] L l)
+        [DoesNotReturn]
+        private static T Guard<T>(string state) => Either.NullGuard<T>.NullInitGuard(state);
+
+        private Either([DisallowNull][NotNull] L l)
         {
-            if (l is null)
-                throw new ArgumentNullException(nameof(l), "Cannot initialize Either in the Left state with a null left value. Use Option instead.");
+            if (l is null) Guard<L>("Left");
             left = l;
             right = default;
             isLeft = true;
         }
 
-        private Either([DisallowNull] R r)
+        private Either([DisallowNull][NotNull] R r)
         {
-            if (r is null)
-                throw new ArgumentNullException(nameof(r), "Cannot initialize Either in the Right state with a null right value. Use Option instead.");
+            if (r is null) Guard<R>("Right");
             left = default;
             right = r;
             isLeft = false;
         }
 
-        public static implicit operator Either<L, R>(L l) =>
-            new(l ?? throw new ArgumentNullException(nameof(l), "Cannot initialize Either in the Left state with a null left value. Use Option instead."));
-        public static implicit operator Either<L, R>(R r) =>
-            new(r ?? throw new ArgumentNullException(nameof(r), "Cannot initialize Either in the Right state with a null right value. Use Option instead."));
-
-        public static implicit operator Either<L, R>(Either.Left<L> l) =>
-            new(l.Value ?? throw new ArgumentNullException(nameof(l), "Cannot initialize Either in the Left state with a null left value. Use Option instead."));
-
-        public static implicit operator Either<L, R>(Either.Right<R> r) =>
-            new(r.Value ?? throw new ArgumentNullException(nameof(r), "Cannot initialize Either in the Right state with a null right value. Use Option instead."));
-
+        public static implicit operator Either<L, R>([DisallowNull][NotNull] L l) => new(l ?? Guard<L>("Left"));
+        public static implicit operator Either<L, R>([DisallowNull][NotNull] R r) => new(r ?? Guard<R>("Right"));
+        public static implicit operator Either<L, R>(Either.Left<L> l) => new(l.Value ?? Guard<L>("Left"));
+        public static implicit operator Either<L, R>(Either.Right<R> r) => new(r.Value ?? Guard<R>("Right"));
         public TR Match<TR>(Func<L, TR> Left, Func<R, TR> Right) => isLeft ? Left(left) : Right(right);
     }
 }

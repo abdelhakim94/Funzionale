@@ -1,16 +1,20 @@
-﻿namespace Funzionale
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Funzionale
 {
     using static Prelude;
 
     public static class OptionExtensions
     {
+        [DoesNotReturn]
+        private static T Guard<T>(string fName) => throw new ArgumentNullException($"'{fName}' returned null. Consider returning an Option instead.");
         // Functor
 
         public static Option<R> Map<T, R>(this Option.None _, Func<T, R> map) => none;
         public static Option<R> Map<T, R>(this Option<T> @this, Func<T, R> map) =>
             @this.Match(
                 None: () => none,
-                Some: t => some(map(t) ?? throw new ArgumentNullException(nameof(map), "'map' returned null. Consider returning an Option and using Bind / SelectMany")));
+                Some: t => some(map(t) ?? Guard<R>(nameof(map))));
 
         public static Option<Func<T2, R>> Map<T1, T2, R>(this Option<T1> @this, Func<T1, T2, R> f) =>
             @this.Map(f.CurryFirst());
@@ -36,9 +40,9 @@
         public static Option<R> Apply<T, R>(this Option<Func<T, R>> @this, Option<T> arg) =>
             @this.Match(
                 None: () => none,
-                Some: f => arg.Match(
+                Some: innerFunc => arg.Match(
                     None: () => none,
-                    Some: a => some(f(a) ?? throw new ArgumentNullException("The provided function returned a null. Consider returning an Option instead."))));
+                    Some: a => some(innerFunc(a) ?? Guard<R>(nameof(innerFunc)))));
 
         public static Option<R> Apply<T, R>(this Option<Func<T, Option<R>>> @this, Option<T> arg) =>
             @this.Match(
