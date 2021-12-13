@@ -4,6 +4,7 @@ namespace Funzionale
 {
     using static Prelude;
     using Validation;
+
     public static partial class Prelude
     {
         public static Validation<T> valid<T>([DisallowNull][NotNull] T t) => new(t);

@@ -72,7 +72,6 @@ namespace Funzionale
 
         // Utilities
 
-        public static Option<Unit> ForEach<T>(this Option<T> @this, Func<T, Unit> f) => @this.Map(f);
         public static Option<Unit> ForEach<T>(this Option<T> @this, Action<T> action) => @this.ForEach(action.ToFunc());
 
         public static Unit Match<T>(this Option<T> @this, Action None, Action<T> Some) =>

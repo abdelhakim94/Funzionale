@@ -60,10 +60,7 @@ namespace Funzionale
         // Utilities
 
         public static Either<L, Unit> ForEach<L, R>(this Either<L, R> @this, Action<R> action) =>
-            @this.ForEach(action.ToFunc());
-
-        public static Either<L, Unit> ForEach<L, R>(this Either<L, R> @this, Func<R, Unit> func) =>
-            @this.Map(func);
+            @this.Map(action.ToFunc());
 
         public static Unit Match<L, R>(this Either<L, R> @this, Action<L> Left, Action<R> Right) =>
             @this.Match(Left.ToFunc(), Right.ToFunc());
