@@ -2,10 +2,10 @@
 
 namespace Funzionale
 {
-    using static Prelude;
     public static partial class Prelude
     {
         public static Exceptional<T> success<T>([DisallowNull][NotNull] T t) => new(t);
+        public static Exceptional<T> failure<T>([DisallowNull][NotNull] Exception ex) => new(ex);
     }
 
     public readonly struct Exceptional<T>

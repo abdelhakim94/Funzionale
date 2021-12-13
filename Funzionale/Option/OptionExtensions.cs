@@ -47,16 +47,12 @@ namespace Funzionale
         public static Option<R> Apply<T, R>(this Option<Func<T, R>> @this, Option<T> arg) =>
             @this.Match(
                 None: () => none,
-                Some: innerFunc => arg.Match(
-                    None: () => none,
-                    Some: a => some(innerFunc(a) ?? Guard<R>(nameof(innerFunc)))));
+                Some: innerFunc => arg.Map(innerFunc));
 
         public static Option<R> Apply<T, R>(this Option<Func<T, Option<R>>> @this, Option<T> arg) =>
             @this.Match(
                 None: () => none,
-                Some: f => arg.Match(
-                    None: () => none,
-                    Some: a => f(a)));
+                Some: f => arg.Bind(f));
 
         public static Option<Func<T2, R>> Apply<T1, T2, R>(this Option<Func<T1, T2, R>> @this, Option<T1> arg) =>
             @this.Map(FuncExtensions.Curry).Apply(arg);

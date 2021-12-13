@@ -60,7 +60,7 @@ namespace Funzionale.Validation
 
         // Utilities
         public static Validation<Unit> Foreach<T>(this Validation<T> @this, Action<T> action) => @this.Map(action.ToFunc());
-        public static Validation<Unit> Match<T, R>(this Validation<T> @this, Action<IEnumerable<Error>> Invalid, Action<T> Valid) =>
+        public static Unit Match<T, R>(this Validation<T> @this, Action<IEnumerable<Error>> Invalid, Action<T> Valid) =>
             @this.Match(Invalid.ToFunc(), Valid.ToFunc());
 
         // TODO: Traversable

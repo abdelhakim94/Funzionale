@@ -39,9 +39,7 @@ namespace Funzionale
         public static Either<L, RR> Apply<L, R, RR>(this Either<L, Func<R, RR>> @this, Either<L, R> arg) =>
             @this.Match(
                 Left: l => left(l!),
-                Right: innerFunc => arg.Match<Either<L, RR>>(
-                    Left: l => left(l!),
-                    Right: v => right(innerFunc(v) ?? Guard<RR>(nameof(innerFunc)))));
+                Right: innerFunc => arg.Map(innerFunc));
 
         public static Either<L, Func<T2, R>> Apply<L, T1, T2, R>(this Either<L, Func<T1, T2, R>> @this, Either<L, T1> arg) =>
             Apply(@this.Map(FuncExtensions.Curry), arg);
