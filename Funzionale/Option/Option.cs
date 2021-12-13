@@ -14,7 +14,7 @@
         /// <returns>An 'Option' in the 'Some' state wrapping your value</returns>
         /// <exception cref="ArgumentNullException">The provided value was null</exception>
         public static Option<T> some<T>([DisallowNull][NotNull] T value) =>
-            value ?? throw new ArgumentNullException(nameof(value), "'Some' cannot wrap a null value. Use None instead.");
+            new(value ?? throw new ArgumentNullException(nameof(value), "'Some' cannot wrap a null value. Use None instead."));
 
         public static Option.None none => default;
     }
@@ -26,13 +26,18 @@
 
     public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<Option.None>
     {
-        readonly T value;
+        readonly T? value;
 
         [MemberNotNullWhen(true, nameof(value))]
         readonly bool IsSome => value is not null;
 
         [MemberNotNullWhen(false, nameof(value))]
         readonly bool IsNone => !IsSome;
+
+        internal Option(T t)
+        {
+            value = t;
+        }
 
         public static implicit operator Option<T>(Option.None _) => default;
         public static implicit operator Option<T>(T value) => value is null ? none : some(value);
