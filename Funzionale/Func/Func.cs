@@ -32,7 +32,7 @@
 
         public static Func<T2, R> Apply<T1, T2, R>(this Func<T1, T2, R> @this, T1 t1) =>
             t2 => @this(t1, t2);
-        
+
         public static Func<T2, T3, R> Apply<T1, T2, T3, R>(this Func<T1, T2, T3, R> @this, T1 t1) =>
             (t2, t3) => @this(t1, t2, t3);
 
@@ -41,5 +41,41 @@
 
         public static Func<T2, T3, T4, T5, R> Apply<T1, T2, T3, T4, T5, R>(this Func<T1, T2, T3, T4, T5, R> @this, T1 t1) =>
             (t2, t3, t4, t5) => @this(t1, t2, t3, t4, t5);
+
+        // Make Func a functor over the result
+
+        public static Func<R> Map<T, R>(this Func<T> @this, Func<T, R> map) => () => map(@this());
+
+        public static Func<T1, R> Map<T1, T2, R>(this Func<T1, T2> @this, Func<T2, R> map) => t1 => map(@this(t1));
+
+        public static Func<T1, T2, R> Map<T1, T2, T3, R>(this Func<T1, T2, T3> @this, Func<T3, R> map) =>
+            (t1, t2) => map(@this(t1, t2));
+
+        public static Func<T1, T2, T3, R> Map<T1, T2, T3, T4, R>(this Func<T1, T2, T3, T4> @this, Func<T4, R> map) =>
+            (t1, t2, t3) => map(@this(t1, t2, t3));
+
+        public static Func<T1, T2, T3, T4, R> Map<T1, T2, T3, T4, T5, R>(this Func<T1, T2, T3, T4, T5> @this, Func<T5, R> map) =>
+            (t1, t2, t3, t4) => map(@this(t1, t2, t3, t4));
+
+        public static Func<T1, T2, T3, T4, T5, R> Map<T1, T2, T3, T4, T5, T6, R>(this Func<T1, T2, T3, T4, T5, T6> @this, Func<T6, R> map) =>
+            (t1, t2, t3, t4, t5) => map(@this(t1, t2, t3, t4, t5));
+
+        // Make Func a monad over the result
+
+        public static Func<R> Bind<T, R>(this Func<T> @this, Func<T, Func<R>> bind) => bind(@this());
+
+        public static Func<T1, R> Bind<T1, T2, R>(this Func<T1, T2> @this, Func<T2, Func<R>> bind) => t1 => bind(@this(t1))();
+
+        public static Func<T1, T2, R> Bind<T1, T2, T3, R>(this Func<T1, T2, T3> @this, Func<T3, Func<R>> bind) =>
+            (t1, t2) => bind(@this(t1, t2))();
+
+        public static Func<T1, T2, T3, R> Bind<T1, T2, T3, T4, R>(this Func<T1, T2, T3, T4> @this, Func<T4, Func<R>> bind) =>
+            (t1, t2, t3) => bind(@this(t1, t2, t3))();
+
+        public static Func<T1, T2, T3, T4, R> Bind<T1, T2, T3, T4, T5, R>(this Func<T1, T2, T3, T4, T5> @this, Func<T5, Func<R>> bind) =>
+            (t1, t2, t3, t4) => bind(@this(t1, t2, t3, t4))();
+
+        public static Func<T1, T2, T3, T4, T5, R> Bind<T1, T2, T3, T4, T5, T6, R>(this Func<T1, T2, T3, T4, T5, T6> @this, Func<T6, Func<R>> bind) =>
+            (t1, t2, t3, t4, t5) => bind(@this(t1, t2, t3, t4, t5))();
     }
 }

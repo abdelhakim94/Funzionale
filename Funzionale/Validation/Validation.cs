@@ -22,7 +22,7 @@ namespace Funzionale
         {
             internal readonly IEnumerable<Error> Errors;
             internal Invalid([DisallowNull][NotNull] IEnumerable<Error> errors) => Errors = errors
-                ?? throw new ArgumentNullException(nameof(errors), "Cannot initialize the invalid state with a null collection of errors. Consider providing an empty Collection."); ;
+                ?? throw new ArgumentNullException(nameof(errors), "Cannot initialize the invalid state with a null collection of errors. Consider providing an empty Collection.");
         }
     }
 
