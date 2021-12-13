@@ -18,8 +18,7 @@ namespace Funzionale
             internal readonly L Value;
             internal Left([DisallowNull][NotNull] L value)
             {
-                if (value is null) NullGuard<L>.NullStateGuard("Left");
-                Value = value;
+                Value = value ?? NullGuard<L>.NullStateGuard("Left");
             }
         }
 
@@ -28,8 +27,7 @@ namespace Funzionale
             internal readonly R Value;
             internal Right([DisallowNull][NotNull] R value)
             {
-                if (value is null) NullGuard<R>.NullStateGuard("Right");
-                Value = value;
+                Value = value ?? NullGuard<R>.NullStateGuard("Right");
             }
         }
     }
@@ -48,17 +46,15 @@ namespace Funzionale
 
         private Either([DisallowNull][NotNull] L l)
         {
-            if (l is null) Guard<L>("Left");
-            left = l;
+            left = l ?? Guard<L>("Left"); ;
             right = default;
             isLeft = true;
         }
 
         private Either([DisallowNull][NotNull] R r)
         {
-            if (r is null) Guard<R>("Right");
+            right = r ?? Guard<R>("Right");
             left = default;
-            right = r;
             isLeft = false;
         }
 

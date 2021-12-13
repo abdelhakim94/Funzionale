@@ -21,12 +21,8 @@ namespace Funzionale
         public readonly struct Invalid
         {
             internal readonly IEnumerable<Error> Errors;
-            internal Invalid([DisallowNull][NotNull] IEnumerable<Error> errors)
-            {
-                if (errors is null)
-                    throw new ArgumentNullException(nameof(errors), "Cannot initialize the invalid state with a null collection of errors. Consider providing an empty Collection.");
-                Errors = errors;
-            }
+            internal Invalid([DisallowNull][NotNull] IEnumerable<Error> errors) => Errors = errors
+                ?? throw new ArgumentNullException(nameof(errors), "Cannot initialize the invalid state with a null collection of errors. Consider providing an empty Collection."); ;
         }
     }
 
@@ -40,18 +36,15 @@ namespace Funzionale
 
         internal Validation([DisallowNull][NotNull] T t)
         {
-            if (t is null)
-                throw new ArgumentNullException(nameof(t), "Cannot initialize a Validation in the valid state with a null value. Consider using an Option instead.");
+
+            value = t ?? throw new ArgumentNullException(nameof(t), "Cannot initialize a Validation in the valid state with a null value. Consider using an Option instead.");
             errors = Enumerable.Empty<Error>();
-            value = t;
             isValid = true;
         }
 
         internal Validation([DisallowNull][NotNull] IEnumerable<Error> errors)
         {
-            if (errors is null)
-                throw new ArgumentNullException(nameof(errors), "Cannot initialize a Validation in the invalid state with a null collection of errors. Consider providing an empty Collection.");
-            this.errors = errors;
+            this.errors = errors ?? throw new ArgumentNullException(nameof(errors), "Cannot initialize a Validation in the invalid state with a null collection of errors. Consider providing an empty Collection.");
             value = default;
             isValid = false;
         }

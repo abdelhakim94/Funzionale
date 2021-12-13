@@ -29,7 +29,7 @@
         readonly T? value;
 
         [MemberNotNullWhen(true, nameof(value))]
-        readonly bool IsSome => value is not null;
+        bool IsSome { get; }
 
         [MemberNotNullWhen(false, nameof(value))]
         readonly bool IsNone => !IsSome;
@@ -37,6 +37,7 @@
         internal Option(T t)
         {
             value = t;
+            IsSome = t is not null;
         }
 
         public static implicit operator Option<T>(Option.None _) => default;
