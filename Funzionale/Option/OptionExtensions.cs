@@ -87,8 +87,8 @@ namespace Funzionale
             @this.Bind(x => bind(x).Map(y => project(x, y)));
 
         public static Option<T> Where<T>(this Option<T> @this, Func<T, bool> predicate) =>
-            @this.Match<Option<T>>(
+            @this.Match(
                 None: () => none,
-                Some: v => predicate(v) ? v : none);
+                Some: v => predicate(v) ? some(v!) : none);
     }
 }

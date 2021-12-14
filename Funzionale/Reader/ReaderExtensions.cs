@@ -57,6 +57,8 @@
             where Env : struct =>
                 @this.Map(action.ToFunc());
 
+        // TODO: Traversable
+
         // LINQ
 
         public static Reader<Env, R> Select<Env, T, R>(this Reader<Env, T> @this, Func<T, R> map) where Env : struct =>
