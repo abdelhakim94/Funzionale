@@ -53,6 +53,9 @@ namespace Funzionale
         public static implicit operator Validation<T>(Error error) => invalid(error);
         public static implicit operator Validation<T>([DisallowNull][NotNull] T t) => new(t);
 
+        public static bool operator true(Validation<T> @this) => @this.isValid;
+        public static bool operator false(Validation<T> @this) => !@this.isValid;
+
         public R Match<R>(Func<IEnumerable<Error>, R> Invalid, Func<T, R> Valid) => isValid ? Valid(value) : Invalid(errors);
     }
 }

@@ -1,6 +1,24 @@
 ﻿namespace Funzionale
 {
     using static Prelude;
+
+    public static partial class Prelude
+    {
+        // act returns the same action you give it. It allows the type
+        // system to infere what the type of 'a' is when it's a lambda.
+        // Instead of doing:
+        //      var add = new Action<string>(s => WriteLine(s));
+        // You do:
+        //      var add = act(s => WriteLine(s));
+
+        public static Action act(Action a) => a;
+        public static Action<T> act<T>(Action<T> a) => a;
+        public static Action<T1, T2> act<T1, T2>(Action<T1, T2> a) => a;
+        public static Action<T1, T2, T3> act<T1, T2, T3>(Action<T1, T2, T3> a) => a;
+        public static Action<T1, T2, T3, T4> act<T1, T2, T3, T4>(Action<T1, T2, T3, T4> a) => a;
+        public static Action<T1, T2, T3, T4, T5> act<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> a) => a;
+    }
+
     public static class ActionExtentions
     {
         // Action to Func

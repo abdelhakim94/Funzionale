@@ -34,6 +34,9 @@ namespace Funzionale
         public static implicit operator Exceptional<T>([DisallowNull][NotNull] Exception ex) => new(ex);
         public static implicit operator Exceptional<T>([DisallowNull][NotNull] T t) => new(t);
 
+        public static bool operator true(Exceptional<T> @this) => @this.isSuccess;
+        public static bool operator false(Exceptional<T> @this) => !@this.isSuccess;
+
         public R Match<R>(Func<Exception, R> Exception, Func<T, R> Success) => isSuccess ? Success(value) : Exception(exception);
     }
 }
