@@ -66,6 +66,7 @@ namespace Funzionale
         // LINQ
 
         public static Exceptional<R> Select<T, R>(this Exceptional<T> @this, Func<T, R> map) => @this.Map(map);
+
         public static Exceptional<R> SelectMany<T, R>(this Exceptional<T> @this, Func<T, Exceptional<R>> bind) => @this.Bind(bind);
 
         public static Exceptional<S> SelectMany<T, R, S>(this Exceptional<T> @this, Func<T, Exceptional<R>> bind, Func<T, R, S> project) =>

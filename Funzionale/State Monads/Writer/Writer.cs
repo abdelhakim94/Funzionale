@@ -15,7 +15,7 @@ namespace Funzionale
     }
 
     /// <summary>
-    /// A monad that aggregates some result along the computations
+    /// A monad that produces a value T and aggregates some other result W along the computation
     /// </summary>
     public readonly struct Writer<MonoidW, W, T> where MonoidW : struct, Monoid<W>
     {
@@ -31,7 +31,14 @@ namespace Funzionale
             try
             {
                 var (value, output) = func();
-                return (success(value!), output);
+
+                if (value is null)
+                    throw new ArgumentNullException(nameof(value), "The function provided to the Writer returned a null value. Consider using an Option instead.");
+
+                if (output is null)
+                    throw new ArgumentNullException(nameof(value), "The function provided to the Writer returned a null aggregate. Consider using an Option instead.");
+
+                return (success(value), output);
             }
             catch (Exception ex)
             {

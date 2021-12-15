@@ -27,6 +27,18 @@ namespace Funzionale
                 Left: l => left(mapLeft(l) ?? Guard<LL>(nameof(mapLeft))),
                 Right: r => right(mapRight(r) ?? Guard<RR>(nameof(mapRight))));
 
+        public static Either<L, Func<T2, R>> Map<L, T1, T2, R>(this Either<L, T1> @this, Func<T1, T2, R> map) =>
+            @this.Map(map.Curry());
+
+        public static Either<L, Func<T2, T3, R>> Map<L, T1, T2, T3, R>(this Either<L, T1> @this, Func<T1, T2, T3, R> map) =>
+            @this.Map(map.CurryFirst());
+
+        public static Either<L, Func<T2, T3, T4, R>> Map<L, T1, T2, T3, T4, R>(this Either<L, T1> @this, Func<T1, T2, T3, T4, R> map) =>
+            @this.Map(map.CurryFirst());
+
+        public static Either<L, Func<T2, T3, T4, T5, R>> Map<L, T1, T2, T3, T4, T5, R>(this Either<L, T1> @this, Func<T1, T2, T3, T4, T5, R> map) =>
+            @this.Map(map.CurryFirst());
+
         // Monad
 
         public static Either<L, RR> Bind<L, R, RR>(this Either<L, R> @this, Func<R, Either<L, RR>> bind) =>

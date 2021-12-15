@@ -5,11 +5,9 @@ namespace Funzionale
     using static Prelude;
     public static partial class Prelude
     {
-        public static Reader<Env, T> reader<Env, T>([DisallowNull][NotNull] Func<Env, T> func) where Env : struct =>
-            new(func);
+        public static Reader<Env, T> reader<Env, T>([DisallowNull][NotNull] Func<Env, T> func) where Env : struct => func;
 
-        public static Reader<Env, T> reader<Env, T>([DisallowNull][NotNull] T value) where Env : struct =>
-            new(env => value);
+        public static Reader<Env, T> reader<Env, T>([DisallowNull][NotNull] T value) where Env : struct => new(env => value);
     }
 
     /// <summary>
@@ -20,7 +18,7 @@ namespace Funzionale
         internal readonly Func<Env, T> func;
 
         internal Reader([DisallowNull][NotNull] Func<Env, T> func) =>
-            this.func = func ?? throw new ArgumentNullException(nameof(func), "Cannot initialize a reader with a null delegate function.");
+            this.func = func ?? throw new ArgumentNullException(nameof(func), "Cannot initialize a Reader with a null delegate function.");
 
         public static implicit operator Reader<Env, T>(Func<Env, T> func) => new(func);
 
@@ -28,7 +26,7 @@ namespace Funzionale
         {
             try
             {
-                return success(func(env) ?? throw new ArgumentNullException(nameof(func), "The function provided to the reader returned null. Consider using an Option."));
+                return success(func(env) ?? throw new ArgumentNullException(nameof(func), "The function provided to the Reader returned null. Consider using an Option."));
             }
             catch (Exception ex)
             {

@@ -69,8 +69,7 @@ namespace Funzionale
 
         public static Validation<R> Select<T, R>(this Validation<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static Validation<R> SelectMany<T, R>(this Validation<T> @this, Func<T, Validation<R>> bind) =>
-            @this.Bind(bind);
+        public static Validation<R> SelectMany<T, R>(this Validation<T> @this, Func<T, Validation<R>> bind) => @this.Bind(bind);
 
         public static Validation<S> SelectMany<T, R, S>(this Validation<T> @this, Func<T, Validation<R>> bind, Func<T, R, S> project) =>
             @this.Bind(t => bind(t).Map(r => project(t, r)));
