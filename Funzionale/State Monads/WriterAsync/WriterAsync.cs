@@ -5,32 +5,33 @@ namespace Funzionale
     using static Prelude;
     public static partial class Prelude
     {
-        public static Writer<MonoidW, W, T> writer<MonoidW, W, T>([DisallowNull][NotNull] T value)
+        public static WriterAsync<MonoidW, W, T> writerAsync<MonoidW, W, T>([DisallowNull][NotNull] T value)
             where MonoidW : struct, Monoid<W> =>
-                new(() => (value, default(MonoidW).Empty()));
+                new(() => Task.FromResult((value, default(MonoidW).Empty())));
 
-        public static Writer<MonoidW, W, T> writer<MonoidW, W, T>([DisallowNull][NotNull] T value, [DisallowNull][NotNull] W output)
+        public static WriterAsync<MonoidW, W, T> writerAsync<MonoidW, W, T>([DisallowNull][NotNull] T value, [DisallowNull][NotNull] W output)
             where MonoidW : struct, Monoid<W> =>
-                new(() => (value, output));
+                new(() => Task.FromResult((value, output)));
     }
 
     /// <summary>
     /// A monad that produces a value T and aggregates some other result W along the computation
     /// </summary>
-    public readonly struct Writer<MonoidW, W, T> where MonoidW : struct, Monoid<W>
+    public readonly struct WriterAsync<MonoidW, W, T> where MonoidW : struct, Monoid<W>
     {
-        internal readonly Func<(T value, W output)> func;
+        internal readonly Func<Task<(T value, W output)>> func;
 
-        internal Writer([DisallowNull][NotNull] Func<(T value, W output)> f) =>
+        internal WriterAsync([DisallowNull][NotNull] Func<Task<(T value, W output)>> f) =>
             func = f ?? throw new ArgumentNullException(nameof(f), "Cannot initialize a writer with a null delegate");
 
-        public static implicit operator Writer<MonoidW, W, T>([DisallowNull][NotNull] Func<(T value, W output)> f) => new(f);
+        public static implicit operator WriterAsync<MonoidW, W, T>([DisallowNull][NotNull] Func<Task<(T value, W output)>> f) =>
+            new(f);
 
-        public (Exceptional<T> value, W output) Run()
+        public async Task<(Exceptional<T> value, W output)> Run()
         {
             try
             {
-                var (value, output) = func();
+                var (value, output) = await func();
 
                 if (value is null)
                     throw new ArgumentNullException(nameof(value), "The function provided to the Writer returned a null value. Consider using an Option instead.");
