@@ -7,7 +7,7 @@
 
         public static WriterAsync<MonoidW, W, R> Map<MonoidW, W, T, R>(this WriterAsync<MonoidW, W, T> @this, Func<T, R> map)
             where MonoidW : struct, Monoid<W> =>
-                fun(() => @this.func().Map(t => (map(t.value), t.output)));
+                new(() => @this.func().Map(t => (map(t.value), t.output)));
 
         public static WriterAsync<MonoidW, W, Func<T2, R>> Map<MonoidW, W, T1, T2, R>(
             this WriterAsync<MonoidW, W, T1> @this, Func<T1, T2, R> f) where MonoidW : struct, Monoid<W> =>
@@ -30,7 +30,7 @@
         public static WriterAsync<MonoidW, W, R> Bind<MonoidW, W, T, R>(
             this WriterAsync<MonoidW, W, T> @this, Func<T, WriterAsync<MonoidW, W, R>> bind)
                 where MonoidW : struct, Monoid<W> =>
-                    fun(() => @this.func()
+                    new(() => @this.func()
                         .Map(x => bind(x.value).func()
                             .Map(y => (y.value, concat<MonoidW, W>(x.output, y.output))))
                     .Unwrap());
@@ -39,7 +39,7 @@
 
         public static WriterAsync<MonoidW, W, R> Apply<MonoidW, W, T, R>(
             this WriterAsync<MonoidW, W, Func<T, R>> @this, WriterAsync<MonoidW, W, T> arg) where MonoidW : struct, Monoid<W> =>
-                fun(() => @this.func()
+                new(() => @this.func()
                     .Map(x => arg.func()
                         .Map(y => (x.value(y.value), concat<MonoidW, W>(x.output, y.output))))
                 .Unwrap());

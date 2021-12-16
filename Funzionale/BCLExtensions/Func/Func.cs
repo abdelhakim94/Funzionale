@@ -81,7 +81,7 @@
 
         // Make Func a monad over the result
 
-        public static Func<R> Bind<T, R>(this Func<T> @this, Func<T, Func<R>> bind) => bind(@this());
+        public static Func<R> Bind<T, R>(this Func<T> @this, Func<T, Func<R>> bind) => () => bind(@this())();
 
         public static Func<T1, R> Bind<T1, T2, R>(this Func<T1, T2> @this, Func<T2, Func<R>> bind) => t1 => bind(@this(t1))();
 
@@ -99,9 +99,11 @@
 
         // LINQ
 
-        public static Func<R> Select<T, R>(this Func<T> @this, Func<T, R> map) => @this.Map(map);
+        public static Func<R> Select<T, R>(this Func<T> @this, Func<T, R> map) =>
+            @this.Map(map);
 
-        public static Func<T1, R> Select<T1, T2, R>(this Func<T1, T2> @this, Func<T2, R> map) => @this.Map(map);
+        public static Func<T1, R> Select<T1, T2, R>(this Func<T1, T2> @this, Func<T2, R> map) =>
+            @this.Map(map);
 
         public static Func<T1, T2, R> Select<T1, T2, T3, R>(this Func<T1, T2, T3> @this, Func<T3, R> map) =>
             @this.Map(map);
@@ -110,10 +112,10 @@
             @this.Map(map);
 
         public static Func<T1, T2, T3, T4, R> Select<T1, T2, T3, T4, T5, R>(this Func<T1, T2, T3, T4, T5> @this, Func<T5, R> map) =>
-            (t1, t2, t3, t4) => map(@this(t1, t2, t3, t4));
+            @this.Map(map);
 
         public static Func<T1, T2, T3, T4, T5, R> Select<T1, T2, T3, T4, T5, T6, R>(this Func<T1, T2, T3, T4, T5, T6> @this, Func<T6, R> map) =>
-            (t1, t2, t3, t4, t5) => map(@this(t1, t2, t3, t4, t5));
+            @this.Map(map);
 
         public static Func<S> SelectMany<T, R, S>(this Func<T> @this, Func<T, Func<R>> bind, Func<T, R, S> project) =>
             @this.Bind(t => bind(t).Map(r => project(t, r)));

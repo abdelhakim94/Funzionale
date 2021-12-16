@@ -20,7 +20,8 @@
 
         // Monad
 
-        public static Try<R> Bind<T, R>(this Try<T> @this, Func<T, Try<R>> bind) => bind(@this.func());
+        public static Try<R> Bind<T, R>(this Try<T> @this, Func<T, Try<R>> bind) =>
+            new(() => bind(@this.func()).func());
 
         // Apply
 
