@@ -34,7 +34,7 @@ namespace Funzionale
         {
             try
             {
-                var (value, output) = await func();
+                var (value, output) = await func().ConfigureAwait(false);
 
                 if (value is null)
                     throw new ArgumentNullException(nameof(value), "The function provided to the Writer returned a null value. Consider using an Option instead.");

@@ -30,7 +30,7 @@ namespace Funzionale
                 if (state is null)
                     throw new ArgumentNullException(nameof(state), "The initiale state provided to the State monad was null. Consider using an Option instead.");
 
-                var (value, newState) = await func(state);
+                var (value, newState) = await func(state).ConfigureAwait(false);
 
                 if (value is null)
                     throw new ArgumentNullException(nameof(value), "The function provided to the Writer returned a null value. Consider using an Option instead.");

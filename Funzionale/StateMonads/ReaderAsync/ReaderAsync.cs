@@ -28,7 +28,7 @@ namespace Funzionale
         {
             try
             {
-                return success(await func(env)
+                return success(await func(env).ConfigureAwait(false)
                     ?? throw new ArgumentNullException(nameof(func), "The function provided to the Reader returned null. Consider using an Option."));
             }
             catch (Exception ex)

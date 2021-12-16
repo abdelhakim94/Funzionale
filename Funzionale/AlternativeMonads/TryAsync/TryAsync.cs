@@ -23,7 +23,7 @@ namespace Funzionale
         {
             try
             {
-                return success(await func() ?? throw new ArgumentNullException("The function provided to the Try monad returned null. Consider using an Option instead."));
+                return success(await func().ConfigureAwait(false) ?? throw new ArgumentNullException("The function provided to the Try monad returned null. Consider using an Option instead."));
             }
             catch (Exception ex)
             {

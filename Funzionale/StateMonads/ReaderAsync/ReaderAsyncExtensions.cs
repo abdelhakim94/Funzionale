@@ -27,13 +27,13 @@
 
         public static ReaderAsync<Env, R> Bind<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind)
             where Env : struct =>
-                new(async env => await bind(await @this.func(env)).func(env));
+                new(async env => await bind(await @this.func(env).ConfigureAwait(false)).func(env).ConfigureAwait(false));
 
         // Applicative
 
         public static ReaderAsync<Env, R> Apply<Env, T, R>(this ReaderAsync<Env, Func<T, R>> @this, ReaderAsync<Env, T> arg)
             where Env : struct =>
-                new(async env => (await @this.func(env))(await arg.func(env)));
+                new(async env => (await @this.func(env).ConfigureAwait(false))(await arg.func(env).ConfigureAwait(false)));
 
         public static ReaderAsync<Env, Func<T2, R>> Apply<Env, T1, T2, R>(this ReaderAsync<Env, Func<T1, T2, R>> @this, ReaderAsync<Env, T1> arg)
             where Env : struct =>

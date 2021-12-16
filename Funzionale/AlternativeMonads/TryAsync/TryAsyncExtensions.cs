@@ -21,12 +21,12 @@
         // Monad
 
         public static TryAsync<R> Bind<T, R>(this TryAsync<T> @this, Func<T, TryAsync<R>> bind) =>
-            new(async () => await bind(await @this.func()).func());
+            new(async () => await bind(await @this.func().ConfigureAwait(false)).func().ConfigureAwait(false));
 
         // Apply
 
         public static TryAsync<R> Apply<T, R>(this TryAsync<Func<T, R>> @this, TryAsync<T> arg) =>
-            new(async () => (await @this.func())(await arg.func()));
+            new(async () => (await @this.func().ConfigureAwait(false))(await arg.func().ConfigureAwait(false)));
 
         public static TryAsync<Func<T2, R>> Apply<T1, T2, R>(this TryAsync<Func<T1, T2, R>> @this, TryAsync<T1> arg) =>
             @this.Map(FuncExtensions.CurryFirst).Apply(arg);
