@@ -85,5 +85,28 @@
                 func: (tryRs, t) => @try(Enumerable.Append<R>)
                                         .Apply(tryRs)
                                         .Apply(f(t)));
+
+        /// <summary>
+        /// IEnumerable to Task traverse with the monadic flow. Runs the tasks in sequence.
+        /// Use the applicative flow instead.
+        /// </summary>
+        public static Task<IEnumerable<R>> TraverseM<T, R>(this IEnumerable<T> @this, Func<T, Task<R>> f) =>
+            @this.Aggregate(
+                seed: async(Enumerable.Empty<R>()),
+                func: (taskRs, t) => from rs in taskRs
+                                     from r in f(t)
+                                     select rs.Append(r));
+
+        /// <summary>
+        /// IEnumerable to Task traverse with the applicative flow. Runs the tasks in parallel.
+        /// Faster than the monadic flow.
+        /// </summary>
+        public static Task<IEnumerable<R>> TraverseA<T, R>(this IEnumerable<T> @this, Func<T, Task<R>> f) =>
+            @this.Aggregate(
+                seed: async(Enumerable.Empty<R>()),
+                func: (taskRs, t) => async(Enumerable.Append<R>)
+                                        .Apply(taskRs)
+                                        .Apply(f(t)));
+
     }
 }
