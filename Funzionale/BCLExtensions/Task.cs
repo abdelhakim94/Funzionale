@@ -1,5 +1,12 @@
-﻿namespace Funzionale
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Funzionale
 {
+    public static partial class Prelude
+    {
+        public static Task<T> async<T>([DisallowNull][NotNull] T t) => Task.FromResult(t);
+    }
+
     public static class TaskExtensions
     {
         // Functor
@@ -33,11 +40,22 @@
 
         // Monad
 
+        /// <summary>
+        /// Tasks (@this and the task returned by bind) will not run in parallel. Use Apply
+        /// if you want them to run in parallel.
+        /// Use the monadic flow if you need the result of the first task to be able to start
+        /// the second task. Use the Applicative flow otherwise.
+        /// </summary>
         public static async Task<R> Bind<T, R>(this Task<T> @this, Func<T, Task<R>> bind) =>
             await bind(await @this.ConfigureAwait(false)).ConfigureAwait(false);
 
         // Applicative
 
+        /// <summary>
+        /// Tasks will run in parallel. Use the applicative flow if a function needs
+        /// the result of many tasks to perform the computation. This way, tasks are
+        /// started in parallel and no task depends on the result of the other.
+        /// </summary>
         public static async Task<R> Apply<T, R>(this Task<Func<T, R>> @this, Task<T> arg) =>
             (await @this.ConfigureAwait(false))(await arg.ConfigureAwait(false));
 
