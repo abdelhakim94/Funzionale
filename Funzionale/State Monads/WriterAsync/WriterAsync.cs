@@ -12,6 +12,9 @@ namespace Funzionale
         public static WriterAsync<MonoidW, W, T> writerAsync<MonoidW, W, T>([DisallowNull][NotNull] T value, [DisallowNull][NotNull] W output)
             where MonoidW : struct, Monoid<W> =>
                 new(() => Task.FromResult((value, output)));
+
+        public static WriterAsync<MonoidW, W, T> writerAsync<MonoidW, W, T>([DisallowNull][NotNull] Func<Task<(T valud, W output)>> f)
+            where MonoidW : struct, Monoid<W> => f;
     }
 
     /// <summary>

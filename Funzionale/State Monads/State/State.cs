@@ -6,6 +6,7 @@ namespace Funzionale
     public static partial class Prelude
     {
         public static State<S, T> state<S, T>([DisallowNull][NotNull] T value) => new(state => (value, state));
+        public static State<S, T> state<S, T>([DisallowNull][NotNull] Func<S, (T value, S state)> f) => f;
     }
 
     /// <summary>

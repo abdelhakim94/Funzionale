@@ -12,6 +12,9 @@ namespace Funzionale
         public static Writer<MonoidW, W, T> writer<MonoidW, W, T>([DisallowNull][NotNull] T value, [DisallowNull][NotNull] W output)
             where MonoidW : struct, Monoid<W> =>
                 new(() => (value, output));
+
+        public static Writer<MonoidW, W, T> writer<MonoidW, W, T>([DisallowNull][NotNull] Func<(T value, W output)> f)
+            where MonoidW : struct, Monoid<W> => f;
     }
 
     /// <summary>

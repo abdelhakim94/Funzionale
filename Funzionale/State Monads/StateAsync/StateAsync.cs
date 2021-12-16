@@ -7,6 +7,8 @@ namespace Funzionale
     {
         public static StateAsync<S, T> stateAsync<S, T>([DisallowNull][NotNull] T value) =>
             new(state => Task.FromResult((value, state)));
+
+        public static StateAsync<S, T> stateAsync<S, T>([DisallowNull][NotNull] Func<S, Task<(T value, S state)>> f) => f;
     }
 
     /// <summary>

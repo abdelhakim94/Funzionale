@@ -5,8 +5,8 @@ namespace Funzionale
     using static Prelude;
     public static partial class Prelude
     {
-        public static ReaderAsync<Env, T> readerAsync<Env, T>([DisallowNull][NotNull] Func<Env, Task<T>> func) where Env : struct =>
-            func;
+        public static ReaderAsync<Env, T> readerAsync<Env, T>([DisallowNull][NotNull] Func<Env, Task<T>> func)
+            where Env : struct => func;
 
         public static ReaderAsync<Env, T> readerAsync<Env, T>([DisallowNull][NotNull] T value) where Env : struct =>
             new(env => Task.FromResult(value));

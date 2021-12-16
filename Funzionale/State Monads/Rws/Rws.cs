@@ -6,6 +6,15 @@ namespace Funzionale
 
     public static partial class Prelude
     {
+        public static Rws<MonoidW, Env, W, S, T> rws<MonoidW, Env, W, S, T>([DisallowNull][NotNull] T value)
+            where MonoidW : struct, Monoid<W> => new((env, state) => (value, default(MonoidW).Empty(), state));
+
+        public static Rws<MonoidW, Env, W, S, T> rws<MonoidW, Env, W, S, T>(
+            [DisallowNull][NotNull] T value, [DisallowNull][NotNull] W output) where MonoidW : struct, Monoid<W> =>
+                new((env, state) => (value, output, state));
+
+        public static Rws<MonoidW, Env, W, S, T> rws<MonoidW, Env, W, S, T>(Func<Env, S, (T value, W output, S state)> f)
+            where MonoidW : struct, Monoid<W> => f;
     }
 
     public readonly struct Rws<MonoidW, Env, W, S, T> where MonoidW : struct, Monoid<W>
