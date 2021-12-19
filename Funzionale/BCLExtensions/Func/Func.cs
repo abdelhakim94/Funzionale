@@ -48,6 +48,7 @@
             t1 => (t2, t3, t4, t5) => @this(t1, t2, t3, t4, t5);
 
         // Apply
+        public static R Apply<T, R>(this Func<T, R> @this, T t) => @this(t);
 
         public static Func<T2, R> Apply<T1, T2, R>(this Func<T1, T2, R> @this, T1 t1) =>
             t2 => @this(t1, t2);
