@@ -1,14 +1,9 @@
-﻿namespace Funzionale
+﻿using System.Linq.Expressions;
+
+namespace Funzionale
 {
     public static partial class Prelude
     {
-        // fun returns the same function you give it. It allows the type
-        // system to infere what the type of f is when it's a lambda.
-        // Instead of doing:
-        //      var add = new Func<int, int, int>((x, y) => x + y);
-        // You do:
-        //      var add = fun((x, y) => x + y);
-
         public static Func<R> fun<R>(Func<R> f) => f;
         public static Func<T, R> fun<T, R>(Func<T, R> f) => f;
         public static Func<T1, T2, R> fun<T1, T2, R>(Func<T1, T2, R> f) => f;
@@ -16,7 +11,17 @@
         public static Func<T1, T2, T3, T4, R> fun<T1, T2, T3, T4, R>(Func<T1, T2, T3, T4, R> f) => f;
         public static Func<T1, T2, T3, T4, T5, R> fun<T1, T2, T3, T4, T5, R>(Func<T1, T2, T3, T4, T5, R> f) => f;
 
+        public static Expression<Func<R>> expr<R>(Func<R> f) => () => f();
+        public static Expression<Func<T, R>> expr<T, R>(Func<T, R> f) => t => f(t);
+        public static Expression<Func<T1, T2, R>> expr<T1, T2, R>(Func<T1, T2, R> f) => (t1, t2) => f(t1, t2);
+        public static Expression<Func<T1, T2, T3, R>> expr<T1, T2, T3, R>(Func<T1, T2, T3, R> f) =>
+            (t1, t2, t3) => f(t1, t2, t3);
 
+        public static Expression<Func<T1, T2, T3, T4, R>> expr<T1, T2, T3, T4, R>(Func<T1, T2, T3, T4, R> f) =>
+            (t1, t2, t3, t4) => f(t1, t2, t3, t4);
+
+        public static Expression<Func<T1, T2, T3, T4, T5, R>> expr<T1, T2, T3, T4, T5, R>(Func<T1, T2, T3, T4, T5, R> f) =>
+            (t1, t2, t3, t4, t5) => f(t1, t2, t3, t4, t5);
     }
 
     public static class FuncExtensions
