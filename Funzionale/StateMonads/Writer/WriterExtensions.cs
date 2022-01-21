@@ -28,10 +28,10 @@
         // Monad
 
         public static Writer<MonoidW, W, R> FlatMap<MonoidW, W, T, R>(
-            this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> bind)
+            this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> map)
                 where MonoidW : struct, Monoid<W> =>
                     new(() => @this.func()
-                        .Transform(x => bind(x.value).func()
+                        .Transform(x => map(x.value).func()
                             .Transform(y => (y.value, concat<MonoidW, W>(x.output, y.output)))));
 
         // Applicative
@@ -70,11 +70,11 @@
             where MonoidW : struct, Monoid<W> => @this.Map(map);
 
         public static Writer<MonoidW, W, R> SelectMany<MonoidW, W, T, R>(
-            this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> bind) where MonoidW : struct, Monoid<W> =>
-                @this.FlatMap(bind);
+            this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> map) where MonoidW : struct, Monoid<W> =>
+                @this.FlatMap(map);
 
         public static Writer<MonoidW, W, S> SelectMany<MonoidW, W, T, R, S>(
-            this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> bind, Func<T, R, S> project)
-                where MonoidW : struct, Monoid<W> => @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+            this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> map, Func<T, R, S> project)
+                where MonoidW : struct, Monoid<W> => @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

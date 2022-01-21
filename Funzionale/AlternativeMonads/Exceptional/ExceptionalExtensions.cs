@@ -30,10 +30,10 @@ namespace Funzionale
 
         // Monad
 
-        public static Exceptional<R> FlatMap<T, R>(this Exceptional<T> @this, Func<T, Exceptional<R>> bind) =>
+        public static Exceptional<R> FlatMap<T, R>(this Exceptional<T> @this, Func<T, Exceptional<R>> map) =>
             @this.Match(
                 Exception: ex => failure<R>(ex),
-                Success: t => bind(t));
+                Success: t => map(t));
 
         // Applicative
 
@@ -67,9 +67,9 @@ namespace Funzionale
 
         public static Exceptional<R> Select<T, R>(this Exceptional<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static Exceptional<R> SelectMany<T, R>(this Exceptional<T> @this, Func<T, Exceptional<R>> bind) => @this.FlatMap(bind);
+        public static Exceptional<R> SelectMany<T, R>(this Exceptional<T> @this, Func<T, Exceptional<R>> map) => @this.FlatMap(map);
 
-        public static Exceptional<S> SelectMany<T, R, S>(this Exceptional<T> @this, Func<T, Exceptional<R>> bind, Func<T, R, S> project) =>
-            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+        public static Exceptional<S> SelectMany<T, R, S>(this Exceptional<T> @this, Func<T, Exceptional<R>> map, Func<T, R, S> project) =>
+            @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

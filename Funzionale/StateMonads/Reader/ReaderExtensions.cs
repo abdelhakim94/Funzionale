@@ -25,9 +25,9 @@
 
         // Monad
 
-        public static Reader<Env, R> FlatMap<Env, T, R>(this Reader<Env, T> @this, Func<T, Reader<Env, R>> bind)
+        public static Reader<Env, R> FlatMap<Env, T, R>(this Reader<Env, T> @this, Func<T, Reader<Env, R>> map)
             where Env : struct =>
-                new(env => bind(@this.func(env)).func(env));
+                new(env => map(@this.func(env)).func(env));
 
         // Applicative
 
@@ -64,12 +64,12 @@
         public static Reader<Env, R> Select<Env, T, R>(this Reader<Env, T> @this, Func<T, R> map) where Env : struct =>
             @this.Map(map);
 
-        public static Reader<Env, R> SelectMany<Env, T, R>(this Reader<Env, T> @this, Func<T, Reader<Env, R>> bind)
+        public static Reader<Env, R> SelectMany<Env, T, R>(this Reader<Env, T> @this, Func<T, Reader<Env, R>> map)
             where Env : struct =>
-                @this.FlatMap(bind);
+                @this.FlatMap(map);
 
-        public static Reader<Env, S> SelectMany<Env, T, R, S>(this Reader<Env, T> @this, Func<T, Reader<Env, R>> bind, Func<T, R, S> project)
+        public static Reader<Env, S> SelectMany<Env, T, R, S>(this Reader<Env, T> @this, Func<T, Reader<Env, R>> map, Func<T, R, S> project)
             where Env : struct =>
-                @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+                @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

@@ -30,10 +30,10 @@ namespace Funzionale
 
         // Monad
 
-        public static Validation<R> FlatMap<T, R>(this Validation<T> @this, Func<T, Validation<R>> bind) =>
+        public static Validation<R> FlatMap<T, R>(this Validation<T> @this, Func<T, Validation<R>> map) =>
             @this.Match(
                 Invalid: e => invalid(e),
-                Valid: t => bind(t));
+                Valid: t => map(t));
 
         // Applicative
 
@@ -69,9 +69,9 @@ namespace Funzionale
 
         public static Validation<R> Select<T, R>(this Validation<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static Validation<R> SelectMany<T, R>(this Validation<T> @this, Func<T, Validation<R>> bind) => @this.FlatMap(bind);
+        public static Validation<R> SelectMany<T, R>(this Validation<T> @this, Func<T, Validation<R>> map) => @this.FlatMap(map);
 
-        public static Validation<S> SelectMany<T, R, S>(this Validation<T> @this, Func<T, Validation<R>> bind, Func<T, R, S> project) =>
-            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+        public static Validation<S> SelectMany<T, R, S>(this Validation<T> @this, Func<T, Validation<R>> map, Func<T, R, S> project) =>
+            @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

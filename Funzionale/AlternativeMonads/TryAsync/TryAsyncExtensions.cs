@@ -20,8 +20,8 @@
 
         // Monad
 
-        public static TryAsync<R> FlatMap<T, R>(this TryAsync<T> @this, Func<T, TryAsync<R>> bind) =>
-            new(async () => await bind(await @this.func().ConfigureAwait(false)).func().ConfigureAwait(false));
+        public static TryAsync<R> FlatMap<T, R>(this TryAsync<T> @this, Func<T, TryAsync<R>> map) =>
+            new(async () => await map(await @this.func().ConfigureAwait(false)).func().ConfigureAwait(false));
 
         // Apply
 
@@ -48,9 +48,9 @@
 
         public static TryAsync<R> Select<T, R>(this TryAsync<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static TryAsync<R> SelectMany<T, R>(this TryAsync<T> @this, Func<T, TryAsync<R>> bind) => @this.FlatMap(bind);
+        public static TryAsync<R> SelectMany<T, R>(this TryAsync<T> @this, Func<T, TryAsync<R>> map) => @this.FlatMap(map);
 
-        public static TryAsync<S> SelectMany<T, R, S>(this TryAsync<T> @this, Func<T, TryAsync<R>> bind, Func<T, R, S> project) =>
-            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+        public static TryAsync<S> SelectMany<T, R, S>(this TryAsync<T> @this, Func<T, TryAsync<R>> map, Func<T, R, S> project) =>
+            @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

@@ -29,9 +29,9 @@
         // Monad
 
         public static Rws<MonoidW, Env, W, S, R> FlatMap<MonoidW, Env, W, S, T, R>(
-            this Rws<MonoidW, Env, W, S, T> @this, Func<T, Rws<MonoidW, Env, W, S, R>> bind) where MonoidW : struct, Monoid<W> =>
+            this Rws<MonoidW, Env, W, S, T> @this, Func<T, Rws<MonoidW, Env, W, S, R>> map) where MonoidW : struct, Monoid<W> =>
                 new((env, state) => @this.func(env, state)
-                    .Transform(x => bind(x.value).func(env, x.state)
+                    .Transform(x => map(x.value).func(env, x.state)
                         .Transform(y => (y.value, concat<MonoidW, W>(x.output, y.output), y.state))));
 
         // Applicative
@@ -71,13 +71,13 @@
             this Rws<MonoidW, Env, W, S, T> @this, Func<T, R> map) where MonoidW : struct, Monoid<W> => @this.Map(map);
 
         public static Rws<MonoidW, Env, W, S, R> SelectMany<MonoidW, Env, W, S, T, R>(
-            this Rws<MonoidW, Env, W, S, T> @this, Func<T, Rws<MonoidW, Env, W, S, R>> bind) where MonoidW : struct, Monoid<W> =>
-                @this.FlatMap(bind);
+            this Rws<MonoidW, Env, W, S, T> @this, Func<T, Rws<MonoidW, Env, W, S, R>> map) where MonoidW : struct, Monoid<W> =>
+                @this.FlatMap(map);
 
         public static Rws<MonoidW, Env, W, S, V> SelectMany<MonoidW, Env, W, S, T, R, V>(
             this Rws<MonoidW, Env, W, S, T> @this,
-            Func<T, Rws<MonoidW, Env, W, S, R>> bind,
+            Func<T, Rws<MonoidW, Env, W, S, R>> map,
             Func<T, R, V> project) where MonoidW : struct, Monoid<W> =>
-                @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+                @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

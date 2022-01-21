@@ -28,10 +28,10 @@
         // Monad
 
         public static WriterAsync<MonoidW, W, R> FlatMap<MonoidW, W, T, R>(
-            this WriterAsync<MonoidW, W, T> @this, Func<T, WriterAsync<MonoidW, W, R>> bind)
+            this WriterAsync<MonoidW, W, T> @this, Func<T, WriterAsync<MonoidW, W, R>> map)
                 where MonoidW : struct, Monoid<W> =>
                     new(() => @this.func()
-                        .Map(x => bind(x.value).func()
+                        .Map(x => map(x.value).func()
                             .Map(y => (y.value, concat<MonoidW, W>(x.output, y.output))))
                     .Unwrap());
 
@@ -72,11 +72,11 @@
             where MonoidW : struct, Monoid<W> => @this.Map(map);
 
         public static WriterAsync<MonoidW, W, R> SelectMany<MonoidW, W, T, R>(
-            this WriterAsync<MonoidW, W, T> @this, Func<T, WriterAsync<MonoidW, W, R>> bind) where MonoidW : struct, Monoid<W> =>
-                @this.FlatMap(bind);
+            this WriterAsync<MonoidW, W, T> @this, Func<T, WriterAsync<MonoidW, W, R>> map) where MonoidW : struct, Monoid<W> =>
+                @this.FlatMap(map);
 
         public static WriterAsync<MonoidW, W, S> SelectMany<MonoidW, W, T, R, S>(
-            this WriterAsync<MonoidW, W, T> @this, Func<T, WriterAsync<MonoidW, W, R>> bind, Func<T, R, S> project)
-                where MonoidW : struct, Monoid<W> => @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+            this WriterAsync<MonoidW, W, T> @this, Func<T, WriterAsync<MonoidW, W, R>> map, Func<T, R, S> project)
+                where MonoidW : struct, Monoid<W> => @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

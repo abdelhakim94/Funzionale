@@ -25,9 +25,9 @@
 
         // Monad
 
-        public static ReaderAsync<Env, R> FlatMap<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind)
+        public static ReaderAsync<Env, R> FlatMap<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> map)
             where Env : struct =>
-                new(async env => await bind(await @this.func(env).ConfigureAwait(false)).func(env).ConfigureAwait(false));
+                new(async env => await map(await @this.func(env).ConfigureAwait(false)).func(env).ConfigureAwait(false));
 
         // Applicative
 
@@ -64,12 +64,12 @@
         public static ReaderAsync<Env, R> Select<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, R> map) where Env : struct =>
             @this.Map(map);
 
-        public static ReaderAsync<Env, R> SelectMany<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind)
+        public static ReaderAsync<Env, R> SelectMany<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> map)
             where Env : struct =>
-                @this.FlatMap(bind);
+                @this.FlatMap(map);
 
-        public static ReaderAsync<Env, S> SelectMany<Env, T, R, S>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind, Func<T, R, S> project)
+        public static ReaderAsync<Env, S> SelectMany<Env, T, R, S>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> map, Func<T, R, S> project)
             where Env : struct =>
-                @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+                @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

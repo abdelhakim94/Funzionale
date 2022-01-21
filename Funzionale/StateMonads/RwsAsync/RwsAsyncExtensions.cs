@@ -29,9 +29,9 @@
         // Monad
 
         public static RwsAsync<MonoidW, Env, W, S, R> FlatMap<MonoidW, Env, W, S, T, R>(
-            this RwsAsync<MonoidW, Env, W, S, T> @this, Func<T, RwsAsync<MonoidW, Env, W, S, R>> bind) where MonoidW : struct, Monoid<W> =>
+            this RwsAsync<MonoidW, Env, W, S, T> @this, Func<T, RwsAsync<MonoidW, Env, W, S, R>> map) where MonoidW : struct, Monoid<W> =>
                 new((env, state) => @this.func(env, state)
-                    .Map(x => bind(x.value).func(env, x.state)
+                    .Map(x => map(x.value).func(env, x.state)
                         .Map(y => (y.value, concat<MonoidW, W>(x.output, y.output), y.state)))
                 .Unwrap());
 
@@ -73,13 +73,13 @@
             this RwsAsync<MonoidW, Env, W, S, T> @this, Func<T, R> map) where MonoidW : struct, Monoid<W> => @this.Map(map);
 
         public static RwsAsync<MonoidW, Env, W, S, R> SelectMany<MonoidW, Env, W, S, T, R>(
-            this RwsAsync<MonoidW, Env, W, S, T> @this, Func<T, RwsAsync<MonoidW, Env, W, S, R>> bind) where MonoidW : struct, Monoid<W> =>
-                @this.FlatMap(bind);
+            this RwsAsync<MonoidW, Env, W, S, T> @this, Func<T, RwsAsync<MonoidW, Env, W, S, R>> map) where MonoidW : struct, Monoid<W> =>
+                @this.FlatMap(map);
 
         public static RwsAsync<MonoidW, Env, W, S, V> SelectMany<MonoidW, Env, W, S, T, R, V>(
             this RwsAsync<MonoidW, Env, W, S, T> @this,
-            Func<T, RwsAsync<MonoidW, Env, W, S, R>> bind,
+            Func<T, RwsAsync<MonoidW, Env, W, S, R>> map,
             Func<T, R, V> project) where MonoidW : struct, Monoid<W> =>
-                @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+                @this.FlatMap(t => map(t).Map(r => project(t, r)));
     }
 }

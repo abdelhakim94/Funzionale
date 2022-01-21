@@ -41,13 +41,13 @@ namespace Funzionale
         // Monad
 
         /// <summary>
-        /// Tasks (@this and the task returned by bind) will not run in parallel. Use Apply
+        /// Tasks (@this and the task returned by map) will not run in parallel. Use Apply
         /// if you want them to run in parallel.
         /// Use the monadic flow if you need the result of the first task to be able to start
         /// the second task. Use the Applicative flow otherwise.
         /// </summary>
-        public static async Task<R> FlatMap<T, R>(this Task<T> @this, Func<T, Task<R>> bind) =>
-            await bind(await @this.ConfigureAwait(false)).ConfigureAwait(false);
+        public static async Task<R> FlatMap<T, R>(this Task<T> @this, Func<T, Task<R>> map) =>
+            await map(await @this.ConfigureAwait(false)).ConfigureAwait(false);
 
         // Applicative
 
@@ -88,10 +88,10 @@ namespace Funzionale
 
         public static Task<R> Select<T, R>(this Task<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static Task<R> SelectMany<T, R>(this Task<T> @this, Func<T, Task<R>> bind) => @this.FlatMap(bind);
+        public static Task<R> SelectMany<T, R>(this Task<T> @this, Func<T, Task<R>> map) => @this.FlatMap(map);
 
-        public static Task<S> SelectMany<T, R, S>(this Task<T> @this, Func<T, Task<R>> bind, Func<T, R, S> project) =>
-            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
+        public static Task<S> SelectMany<T, R, S>(this Task<T> @this, Func<T, Task<R>> map, Func<T, R, S> project) =>
+            @this.FlatMap(t => map(t).Map(r => project(t, r)));
 
         public static async Task<T> Where<T>(this Task<T> @this, Func<T, bool> predicate)
         {
