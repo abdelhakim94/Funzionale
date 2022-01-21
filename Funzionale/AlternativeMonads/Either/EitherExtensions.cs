@@ -41,7 +41,7 @@ namespace Funzionale
 
         // Monad
 
-        public static Either<L, RR> Bind<L, R, RR>(this Either<L, R> @this, Func<R, Either<L, RR>> bind) =>
+        public static Either<L, RR> FlatMap<L, R, RR>(this Either<L, R> @this, Func<R, Either<L, RR>> bind) =>
             @this.Match(
                 Left: l => left(l!),
                 Right: r => bind(r));
@@ -79,9 +79,9 @@ namespace Funzionale
 
         public static Either<L, RR> Select<L, R, RR>(this Either<L, R> @this, Func<R, RR> map) => @this.Map(map);
 
-        public static Either<L, RR> SelectMany<L, R, RR>(this Either<L, R> @this, Func<R, Either<L, RR>> bind) => @this.Bind(bind);
+        public static Either<L, RR> SelectMany<L, R, RR>(this Either<L, R> @this, Func<R, Either<L, RR>> bind) => @this.FlatMap(bind);
 
         public static Either<L, RRR> SelectMany<L, R, RR, RRR>(this Either<L, R> @this, Func<R, Either<L, RR>> bind, Func<R, RR, RRR> project) =>
-            @this.Bind(r => bind(r).Map(rr => project(r, rr)));
+            @this.FlatMap(r => bind(r).Map(rr => project(r, rr)));
     }
 }

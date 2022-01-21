@@ -21,7 +21,7 @@
 
         // Monad
 
-        public static State<S, R> Bind<T, R, S>(this State<S, T> @this, Func<T, State<S, R>> bind) =>
+        public static State<S, R> FlatMap<T, R, S>(this State<S, T> @this, Func<T, State<S, R>> bind) =>
             new(state => @this.func(state).Transform(x => bind(x.value).func(x.state)));
 
         // Applicative
@@ -51,9 +51,9 @@
 
         public static State<S, R> Select<T, R, S>(this State<S, T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static State<S, R> SelectMany<T, R, S>(this State<S, T> @this, Func<T, State<S, R>> bind) => @this.Bind(bind);
+        public static State<S, R> SelectMany<T, R, S>(this State<S, T> @this, Func<T, State<S, R>> bind) => @this.FlatMap(bind);
 
         public static State<S, V> SelectMany<T, R, V, S>(this State<S, T> @this, Func<T, State<S, R>> bind, Func<T, R, V> project) =>
-                @this.Bind(t => bind(t).Map(r => project(t, r)));
+                @this.FlatMap(t => bind(t).Map(r => project(t, r)));
     }
 }

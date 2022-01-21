@@ -25,7 +25,7 @@
 
         // Monad
 
-        public static ReaderAsync<Env, R> Bind<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind)
+        public static ReaderAsync<Env, R> FlatMap<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind)
             where Env : struct =>
                 new(async env => await bind(await @this.func(env).ConfigureAwait(false)).func(env).ConfigureAwait(false));
 
@@ -66,10 +66,10 @@
 
         public static ReaderAsync<Env, R> SelectMany<Env, T, R>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind)
             where Env : struct =>
-                @this.Bind(bind);
+                @this.FlatMap(bind);
 
         public static ReaderAsync<Env, S> SelectMany<Env, T, R, S>(this ReaderAsync<Env, T> @this, Func<T, ReaderAsync<Env, R>> bind, Func<T, R, S> project)
             where Env : struct =>
-                @this.Bind(t => bind(t).Map(r => project(t, r)));
+                @this.FlatMap(t => bind(t).Map(r => project(t, r)));
     }
 }

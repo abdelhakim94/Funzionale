@@ -21,7 +21,7 @@
 
         // Monad
 
-        public static StateAsync<S, R> Bind<T, R, S>(this StateAsync<S, T> @this, Func<T, StateAsync<S, R>> bind) =>
+        public static StateAsync<S, R> FlatMap<T, R, S>(this StateAsync<S, T> @this, Func<T, StateAsync<S, R>> bind) =>
             new(state => @this.func(state).Map(x => bind(x.value).func(x.state)).Unwrap());
 
         // Applicative
@@ -52,9 +52,9 @@
 
         public static StateAsync<S, R> Select<T, R, S>(this StateAsync<S, T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static StateAsync<S, R> SelectMany<T, R, S>(this StateAsync<S, T> @this, Func<T, StateAsync<S, R>> bind) => @this.Bind(bind);
+        public static StateAsync<S, R> SelectMany<T, R, S>(this StateAsync<S, T> @this, Func<T, StateAsync<S, R>> bind) => @this.FlatMap(bind);
 
         public static StateAsync<S, V> SelectMany<T, R, V, S>(this StateAsync<S, T> @this, Func<T, StateAsync<S, R>> bind, Func<T, R, V> project) =>
-                @this.Bind(t => bind(t).Map(r => project(t, r)));
+                @this.FlatMap(t => bind(t).Map(r => project(t, r)));
     }
 }

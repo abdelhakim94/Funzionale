@@ -27,7 +27,7 @@
 
         // Monad
 
-        public static Writer<MonoidW, W, R> Bind<MonoidW, W, T, R>(
+        public static Writer<MonoidW, W, R> FlatMap<MonoidW, W, T, R>(
             this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> bind)
                 where MonoidW : struct, Monoid<W> =>
                     new(() => @this.func()
@@ -71,10 +71,10 @@
 
         public static Writer<MonoidW, W, R> SelectMany<MonoidW, W, T, R>(
             this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> bind) where MonoidW : struct, Monoid<W> =>
-                @this.Bind(bind);
+                @this.FlatMap(bind);
 
         public static Writer<MonoidW, W, S> SelectMany<MonoidW, W, T, R, S>(
             this Writer<MonoidW, W, T> @this, Func<T, Writer<MonoidW, W, R>> bind, Func<T, R, S> project)
-                where MonoidW : struct, Monoid<W> => @this.Bind(t => bind(t).Map(r => project(t, r)));
+                where MonoidW : struct, Monoid<W> => @this.FlatMap(t => bind(t).Map(r => project(t, r)));
     }
 }

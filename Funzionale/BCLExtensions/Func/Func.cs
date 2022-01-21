@@ -87,20 +87,20 @@ namespace Funzionale
 
         // Make Func a monad over the result
 
-        public static Func<R> Bind<T, R>(this Func<T> @this, Func<T, Func<R>> bind) => () => bind(@this())();
+        public static Func<R> FlatMap<T, R>(this Func<T> @this, Func<T, Func<R>> bind) => () => bind(@this())();
 
-        public static Func<T1, R> Bind<T1, T2, R>(this Func<T1, T2> @this, Func<T2, Func<R>> bind) => t1 => bind(@this(t1))();
+        public static Func<T1, R> FlatMap<T1, T2, R>(this Func<T1, T2> @this, Func<T2, Func<R>> bind) => t1 => bind(@this(t1))();
 
-        public static Func<T1, T2, R> Bind<T1, T2, T3, R>(this Func<T1, T2, T3> @this, Func<T3, Func<R>> bind) =>
+        public static Func<T1, T2, R> FlatMap<T1, T2, T3, R>(this Func<T1, T2, T3> @this, Func<T3, Func<R>> bind) =>
             (t1, t2) => bind(@this(t1, t2))();
 
-        public static Func<T1, T2, T3, R> Bind<T1, T2, T3, T4, R>(this Func<T1, T2, T3, T4> @this, Func<T4, Func<R>> bind) =>
+        public static Func<T1, T2, T3, R> FlatMap<T1, T2, T3, T4, R>(this Func<T1, T2, T3, T4> @this, Func<T4, Func<R>> bind) =>
             (t1, t2, t3) => bind(@this(t1, t2, t3))();
 
-        public static Func<T1, T2, T3, T4, R> Bind<T1, T2, T3, T4, T5, R>(this Func<T1, T2, T3, T4, T5> @this, Func<T5, Func<R>> bind) =>
+        public static Func<T1, T2, T3, T4, R> FlatMap<T1, T2, T3, T4, T5, R>(this Func<T1, T2, T3, T4, T5> @this, Func<T5, Func<R>> bind) =>
             (t1, t2, t3, t4) => bind(@this(t1, t2, t3, t4))();
 
-        public static Func<T1, T2, T3, T4, T5, R> Bind<T1, T2, T3, T4, T5, T6, R>(this Func<T1, T2, T3, T4, T5, T6> @this, Func<T6, Func<R>> bind) =>
+        public static Func<T1, T2, T3, T4, T5, R> FlatMap<T1, T2, T3, T4, T5, T6, R>(this Func<T1, T2, T3, T4, T5, T6> @this, Func<T6, Func<R>> bind) =>
             (t1, t2, t3, t4, t5) => bind(@this(t1, t2, t3, t4, t5))();
 
         // LINQ
@@ -124,21 +124,21 @@ namespace Funzionale
             @this.Map(map);
 
         public static Func<S> SelectMany<T, R, S>(this Func<T> @this, Func<T, Func<R>> bind, Func<T, R, S> project) =>
-            @this.Bind(t => bind(t).Map(r => project(t, r)));
+            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
 
         public static Func<T1, S> SelectMany<T1, T2, R, S>(this Func<T1, T2> @this, Func<T2, Func<R>> bind, Func<T2, R, S> project) =>
-            @this.Bind(t => bind(t).Map(r => project(t, r)));
+            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
 
         public static Func<T1, T2, S> SelectMany<T1, T2, T3, R, S>(this Func<T1, T2, T3> @this, Func<T3, Func<R>> bind, Func<T3, R, S> project) =>
-            @this.Bind(t => bind(t).Map(r => project(t, r)));
+            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
 
         public static Func<T1, T2, T3, S> SelectMany<T1, T2, T3, T4, R, S>(this Func<T1, T2, T3, T4> @this, Func<T4, Func<R>> bind, Func<T4, R, S> project) =>
-            @this.Bind(t => bind(t).Map(r => project(t, r)));
+            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
 
         public static Func<T1, T2, T3, T4, S> SelectMany<T1, T2, T3, T4, T5, R, S>(this Func<T1, T2, T3, T4, T5> @this, Func<T5, Func<R>> bind, Func<T5, R, S> project) =>
-            @this.Bind(t => bind(t).Map(r => project(t, r)));
+            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
 
         public static Func<T1, T2, T3, T4, T5, S> SelectMany<T1, T2, T3, T4, T5, T6, R, S>(this Func<T1, T2, T3, T4, T5, T6> @this, Func<T6, Func<R>> bind, Func<T6, R, S> project) =>
-            @this.Bind(t => bind(t).Map(r => project(t, r)));
+            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
     }
 }

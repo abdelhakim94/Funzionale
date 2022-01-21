@@ -37,7 +37,7 @@ namespace Funzionale
 
         // Monad
 
-        public static Option<R> Bind<T, R>(this Option<T> @this, Func<T, Option<R>> bind) =>
+        public static Option<R> FlatMap<T, R>(this Option<T> @this, Func<T, Option<R>> bind) =>
             @this.Match(
                 None: () => none,
                 Some: v => bind(v));
@@ -52,7 +52,7 @@ namespace Funzionale
         public static Option<R> Apply<T, R>(this Option<Func<T, Option<R>>> @this, Option<T> arg) =>
             @this.Match(
                 None: () => none,
-                Some: f => arg.Bind(f));
+                Some: f => arg.FlatMap(f));
 
         public static Option<Func<T2, R>> Apply<T1, T2, R>(this Option<Func<T1, T2, R>> @this, Option<T1> arg) =>
             @this.Map(FuncExtensions.Curry).Apply(arg);
@@ -81,10 +81,10 @@ namespace Funzionale
 
         public static Option<R> Select<T, R>(this Option<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static Option<R> SelectMany<T, R>(this Option<T> @this, Func<T, Option<R>> bind) => @this.Bind(bind);
+        public static Option<R> SelectMany<T, R>(this Option<T> @this, Func<T, Option<R>> bind) => @this.FlatMap(bind);
 
         public static Option<S> SelectMany<T, R, S>(this Option<T> @this, Func<T, Option<R>> bind, Func<T, R, S> project) =>
-            @this.Bind(x => bind(x).Map(y => project(x, y)));
+            @this.FlatMap(x => bind(x).Map(y => project(x, y)));
 
         public static Option<T> Where<T>(this Option<T> @this, Func<T, bool> predicate) =>
             @this.Match(

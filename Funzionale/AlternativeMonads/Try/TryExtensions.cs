@@ -20,7 +20,7 @@
 
         // Monad
 
-        public static Try<R> Bind<T, R>(this Try<T> @this, Func<T, Try<R>> bind) =>
+        public static Try<R> FlatMap<T, R>(this Try<T> @this, Func<T, Try<R>> bind) =>
             new(() => bind(@this.func()).func());
 
         // Apply
@@ -48,9 +48,9 @@
 
         public static Try<R> Select<T, R>(this Try<T> @this, Func<T, R> map) => @this.Map(map);
 
-        public static Try<R> SelectMany<T, R>(this Try<T> @this, Func<T, Try<R>> bind) => @this.Bind(bind);
+        public static Try<R> SelectMany<T, R>(this Try<T> @this, Func<T, Try<R>> bind) => @this.FlatMap(bind);
 
         public static Try<S> SelectMany<T, R, S>(this Try<T> @this, Func<T, Try<R>> bind, Func<T, R, S> project) =>
-            @this.Bind(t => bind(t).Map(r => project(t, r)));
+            @this.FlatMap(t => bind(t).Map(r => project(t, r)));
     }
 }
